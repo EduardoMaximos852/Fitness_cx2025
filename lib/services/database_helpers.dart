@@ -51,21 +51,32 @@ class DatabaseHelper {
       FOREIGN KEY (rotina_id) REFERENCES rotinas (id)
     )
   ''');
+    await db.execute('''
+  CREATE TABLE treinos_concluidos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      cliente_id INTEGER NOT NULL,
+      rotina_id INTEGER NOT NULL,
+      data TEXT NOT NULL,
+      percentual REAL NOT NULL,
+      calorias REAL,
+      comentarios TEXT,
+      FOREIGN KEY (cliente_id) REFERENCES clientes (id),
+      FOREIGN KEY (rotina_id) REFERENCES rotinas (id)
+    )
+  ''');
   }
 
-// Inserir rotina
-Future<int> insertRotina(Map<String, dynamic> rotina) async {
-  final db = await instance.database;
-  return await db.insert('rotinas', rotina);
-}
+  // Inserir treino concluído
+  Future<int> insertTreinoConcluido(Map<String, dynamic> treino) async {
+    final db = await instance.database;
+    return await db.insert('treinos_concluidos', treino);
+  }
 
-// Inserir exercício
-Future<int> insertExercicio(Map<String, dynamic> exercicio) async {
-  final db = await instance.database;
-  return await db.insert('exercicios', exercicio);
-}
-
-
+  // Listar treinos concluídos
+  Future<List<Map<String, dynamic>>> getTreinosConcluidos() async {
+    final db = await instance.database;
+    return await db.query('treinos_concluidos', orderBy: 'data DESC');
+  }
 
   /// 🚀 Inserir cliente no banco
   Future<int> addCliente(Map<String, dynamic> cliente) async {
@@ -95,4 +106,17 @@ Future<int> insertExercicio(Map<String, dynamic> exercicio) async {
     final db = await instance.database;
     return await db.delete('clientes', where: 'id = ?', whereArgs: [id]);
   }
+
+  // Inserir rotina
+Future<int> inserirRotina(Map<String, dynamic> rotina) async {
+  final db = await instance.database;
+  return await db.insert('rotinas', rotina);
+}
+
+// Inserir exercício
+Future<int> inserirExercicio(Map<String, dynamic> exercicio) async {
+  final db = await instance.database;
+  return await db.insert('exercicios', exercicio);
+}
+
 }

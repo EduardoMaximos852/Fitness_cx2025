@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/controllers/cadastro_rotina.dart';
 
 import 'package:myapp/controllers/lista_clientes.dart';
+import 'package:myapp/controllers/treinos_concluidos_page.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -79,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 _shortcutButton(
                   Icons.check_circle,
-                  "Concluídas",
+                  "Pago",
                   Colors.orange,
                   context,
                 ),
@@ -221,7 +222,15 @@ Widget _shortcutButton(
                 builder: (context) => const CadastroRotinaPage(),
               ),
             );
+          } else if (label == "Pago") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const TreinosConcluidosPage(),
+              ),
+            );
           }
+
           // Outros botões podem ter lógica própria
         },
         child: Padding(

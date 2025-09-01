@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/services/database_helpers.dart';
 
-
 class CadastroRotinaPage extends StatefulWidget {
   const CadastroRotinaPage({super.key});
 
@@ -27,7 +26,8 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
   final TextEditingController _exObsController = TextEditingController();
 
   void _adicionarExercicio() {
-    if (_exNomeController.text.isEmpty || _exSeriesController.text.isEmpty) return;
+    if (_exNomeController.text.isEmpty || _exSeriesController.text.isEmpty)
+      return;
 
     setState(() {
       _exercicios.add({
@@ -45,7 +45,7 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
   Future<void> _salvarRotina() async {
     if (_formKey.currentState!.validate()) {
       // Salvar rotina
-      int rotinaId = await DatabaseHelper.instance.insertRotina({
+      int rotinaId = await DatabaseHelper.instance.inserirRotina({
         'nome': _nomeController.text,
         'objetivo': _objetivo,
         'frequencia': _frequenciaController.text,
@@ -54,7 +54,7 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
 
       // Salvar exercícios vinculados
       for (var ex in _exercicios) {
-        await DatabaseHelper.instance.insertExercicio({
+        await DatabaseHelper.instance.inserirExercicio({
           'rotina_id': rotinaId,
           'nome': ex['nome'],
           'series': ex['series'],
@@ -88,7 +88,11 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
           key: _formKey,
           child: Column(
             children: [
-              _buildRoundedInput(_nomeController, "Nome da Rotina", Icons.fitness_center),
+              _buildRoundedInput(
+                _nomeController,
+                "Nome da Rotina",
+                Icons.fitness_center,
+              ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _objetivo,
@@ -102,41 +106,68 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
                   ),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'Hipertrofia', child: Text('Hipertrofia')),
-                  DropdownMenuItem(value: 'Resistência', child: Text('Resistência')),
-                  DropdownMenuItem(value: 'Full Body', child: Text('Full Body')),
+                  DropdownMenuItem(
+                    value: 'Hipertrofia',
+                    child: Text('Hipertrofia'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Resistência',
+                    child: Text('Resistência'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Full Body',
+                    child: Text('Full Body'),
+                  ),
                   DropdownMenuItem(value: 'HIIT', child: Text('HIIT')),
                   DropdownMenuItem(value: 'Core', child: Text('Core')),
-                  DropdownMenuItem(value: 'Flexibilidade', child: Text('Flexibilidade')),
+                  DropdownMenuItem(
+                    value: 'Flexibilidade',
+                    child: Text('Flexibilidade'),
+                  ),
                 ],
                 onChanged: (val) => setState(() => _objetivo = val!),
               ),
               const SizedBox(height: 16),
-              _buildRoundedInput(_frequenciaController, "Frequência (ex.: 3x/semana)", Icons.calendar_month),
+              _buildRoundedInput(
+                _frequenciaController,
+                "Frequência (ex.: 3x/semana)",
+                Icons.calendar_month,
+              ),
               const SizedBox(height: 16),
-              _buildRoundedInput(_duracaoController, "Duração (minutos)", Icons.timer, keyboard: TextInputType.number),
+              _buildRoundedInput(
+                _duracaoController,
+                "Duração (minutos)",
+                Icons.timer,
+                keyboard: TextInputType.number,
+              ),
               const SizedBox(height: 24),
               const Text(
                 "Exercícios",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              ..._exercicios.map((ex) => Card(
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: ListTile(
-                      title: Text(ex['nome'] ?? ""),
-                      subtitle: Text("Séries/Reps: ${ex['series']}\nObservação: ${ex['observacao']}"),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          setState(() {
-                            _exercicios.remove(ex);
-                          });
-                        },
-                      ),
+              ..._exercicios.map(
+                (ex) => Card(
+                  margin: const EdgeInsets.symmetric(vertical: 6),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    title: Text(ex['nome'] ?? ""),
+                    subtitle: Text(
+                      "Séries/Reps: ${ex['series']}\nObservação: ${ex['observacao']}",
                     ),
-                  )),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        setState(() {
+                          _exercicios.remove(ex);
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 12),
               _buildExercicioForm(),
               const SizedBox(height: 24),
@@ -148,7 +179,9 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
                   label: const Text("Salvar Rotina"),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                   ),
                 ),
               ),
@@ -160,8 +193,12 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
   }
 
   /// Input arredondado
-  Widget _buildRoundedInput(TextEditingController controller, String label, IconData icon,
-      {TextInputType keyboard = TextInputType.text}) {
+  Widget _buildRoundedInput(
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+    TextInputType keyboard = TextInputType.text,
+  }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboard,
@@ -170,13 +207,17 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
         prefixIcon: Icon(icon, color: Colors.green),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 18,
+          horizontal: 20,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
         ),
       ),
-      validator: (value) => (value == null || value.isEmpty) ? "Campo obrigatório" : null,
+      validator: (value) =>
+          (value == null || value.isEmpty) ? "Campo obrigatório" : null,
     );
   }
 
@@ -184,11 +225,23 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
   Widget _buildExercicioForm() {
     return Column(
       children: [
-        _buildRoundedInput(_exNomeController, "Nome do Exercício", Icons.fitness_center),
+        _buildRoundedInput(
+          _exNomeController,
+          "Nome do Exercício",
+          Icons.fitness_center,
+        ),
         const SizedBox(height: 8),
-        _buildRoundedInput(_exSeriesController, "Séries/Repetições", Icons.repeat),
+        _buildRoundedInput(
+          _exSeriesController,
+          "Séries/Repetições",
+          Icons.repeat,
+        ),
         const SizedBox(height: 8),
-        _buildRoundedInput(_exObsController, "Observação (opcional)", Icons.notes),
+        _buildRoundedInput(
+          _exObsController,
+          "Observação (opcional)",
+          Icons.notes,
+        ),
         const SizedBox(height: 8),
         SizedBox(
           width: double.infinity,
@@ -198,7 +251,9 @@ class _CadastroRotinaPageState extends State<CadastroRotinaPage> {
             label: const Text("Adicionar Exercício"),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
           ),
